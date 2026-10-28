@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { normalizeHex, resizeColors, syncHexText } from "./color";
+import { EXTRA_COLORS, normalizeHex, resizeColors, syncHexText } from "./color";
 
 describe("normalizeHex", () => {
   it("expande #abc a #aabbcc", () => {
@@ -42,5 +42,12 @@ describe("syncHexText", () => {
   it("toma el valor externo si cambió (selector, intercambiar)", () => {
     expect(syncHexText("#1f4", "#000000")).toBe("#000000");
     expect(syncHexText("#12", "#808080")).toBe("#808080");
+  });
+});
+
+describe("resizeColors usa EXTRA_COLORS en orden", () => {
+  it("el tercer color es el primero de la lista", () => {
+    expect(resizeColors(["#808080", "#ffffff"], 3)).toEqual(["#808080", "#ffffff", EXTRA_COLORS[0]]);
+    expect(resizeColors(["#808080", "#ffffff"], 6).slice(2)).toEqual(EXTRA_COLORS.slice(0, 4));
   });
 });

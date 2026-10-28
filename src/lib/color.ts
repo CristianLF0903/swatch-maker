@@ -15,7 +15,11 @@ export function normalizeHex(input: string): string | null {
 /** Ajusta la lista a n colores: recorta o agrega desde EXTRA_COLORS. */
 export function resizeColors(colors: string[], n: number): string[] {
   if (n <= colors.length) return colors.slice(0, n);
-  const added = Array.from({ length: n - colors.length }, (_, i) => EXTRA_COLORS[(colors.length + i) % EXTRA_COLORS.length]);
+  // El tercer color (posición 2) toma EXTRA_COLORS[0].
+  const added = Array.from(
+    { length: n - colors.length },
+    (_, i) => EXTRA_COLORS[(colors.length - 2 + i) % EXTRA_COLORS.length],
+  );
   return [...colors, ...added];
 }
 

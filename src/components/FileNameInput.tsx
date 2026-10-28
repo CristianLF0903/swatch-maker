@@ -24,7 +24,7 @@ export function FileNameInput({ value, suggested, extension, onChange }: Props) 
           spellCheck={false}
           autoComplete="off"
           aria-describedby={`${id}-hint`}
-          className="min-w-0 flex-1 rounded-l-lg bg-transparent px-3 py-2 text-sm text-neutral-900 outline-none placeholder:text-neutral-400 dark:text-neutral-100"
+          className="min-w-0 flex-1 rounded-l-lg bg-transparent px-3 py-2 text-sm text-neutral-900 outline-none placeholder:text-neutral-500 dark:text-neutral-100"
         />
         <span className="pr-3 text-sm text-neutral-500 dark:text-neutral-400">.{extension}</span>
       </div>

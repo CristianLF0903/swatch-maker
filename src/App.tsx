@@ -1,5 +1,5 @@
 import { ArrowLeftRight, Download } from "lucide-react";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { ColorCountSelect } from "./components/ColorCountSelect";
 import { ColorField } from "./components/ColorField";
 import { FileNameInput } from "./components/FileNameInput";
@@ -25,6 +25,9 @@ export default function App() {
   const [size, setSize] = useState<Size>(128);
   const [fileName, setFileName] = useState("");
   const [bytes, setBytes] = useState<number | null>(null);
+  const [busy, setBusy] = useState(false);
+  const busyRef = useRef(false);
+  const [error, setError] = useState<string | null>(null);
 
   // Al cambiar los colores, el nombre vuelve al sugerido.
   const setColors = (next: string[]) => {
@@ -48,7 +51,19 @@ export default function App() {
   }, [svg, format, exportSize]);
 
   const handleDownload = async () => {
-    downloadBlob(await exportImage(svg, format, exportSize), fullName);
+    // El ref bloquea un doble clic antes de que React re-renderice el botón deshabilitado.
+    if (busyRef.current) return;
+    busyRef.current = true;
+    setBusy(true);
+    setError(null);
+    try {
+      downloadBlob(await exportImage(svg, format, exportSize), fullName);
+    } catch {
+      setError("No se pudo generar la imagen. Intenta de nuevo o prueba otro formato.");
+    } finally {
+      busyRef.current = false;
+      setBusy(false);
+    }
   };
 
   return (
@@ -98,11 +113,18 @@ export default function App() {
             <button
               type="button"
               onClick={handleDownload}
-              className={`inline-flex items-center justify-center gap-2 rounded-lg bg-sky-600 px-4 py-3 font-semibold text-white hover:bg-sky-700 ${focusRing}`}
+              disabled={busy}
+              aria-busy={busy}
+              className={`inline-flex items-center justify-center gap-2 rounded-lg bg-sky-600 px-4 py-3 font-semibold text-white hover:bg-sky-700 disabled:cursor-wait disabled:opacity-60 ${focusRing}`}
             >
               <Download className="size-5" aria-hidden />
-              Descargar
+              {busy ? "Generando…" : "Descargar"}
             </button>
+            {error && (
+              <p role="alert" className="text-sm text-red-600 dark:text-red-400">
+                {error}
+              </p>
+            )}
           </form>
 
           {/* En celular la vista previa va primero para verla mientras se edita. */}

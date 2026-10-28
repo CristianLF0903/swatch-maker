@@ -31,7 +31,7 @@ export function ColorField({ index, value, onChange }: Props) {
           type="button"
           aria-label={`Abrir selector del color ${index + 1}`}
           aria-expanded={open}
-          aria-controls={`${id}-picker`}
+          aria-controls={open ? `${id}-picker` : undefined}
           onClick={() => setOpen((o) => !o)}
           className={`size-10 shrink-0 rounded-lg border border-neutral-300 shadow-inner dark:border-neutral-600 ${focusRing}`}
           style={{ backgroundColor: value }}
